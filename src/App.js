@@ -191,8 +191,8 @@ function RegistroAnomalia() {
                   label={language === 'pt' ? 'Local' : 'Location'}
                   style={{ height: '50px' }}
                 >
-                  <MenuItem value={language === 'pt' ? "Conjunto motobomba 022 do Tratamento de Água" : "Pump Set 022 of Water Treatment"}>
-                    {language === 'pt' ? 'Conjunto motobomba 022 do Tratamento de Água' : 'Pump Set 022 of Water Treatment'}
+                  <MenuItem value={language === 'pt' ? "Conjunto motobomba 022 do Tratamento de Água" : "Pump Motor Set 022 of Water Treatment"}>
+                    {language === 'pt' ? 'Conjunto motobomba 022 do Tratamento de Água' : 'Pump Motor Set 022 of Water Treatment'}
                   </MenuItem>
 
                 </Select>
@@ -261,7 +261,7 @@ function RegistroAnomalia() {
                     label={language === 'pt' ? 'Recomendação' : 'Recommendation'}
                     style={{ height: '50px' }}
                   >
-                    <MenuItem value={language === 'pt' ? 'Substituir motobomba' : 'Replace Pump'}>{language === 'pt' ? 'Substituir motobomba' : 'Replace Pump'}</MenuItem>
+                    <MenuItem value={language === 'pt' ? 'Substituir motobomba' : 'Replace Pump Motor'}>{language === 'pt' ? 'Substituir motobomba' : 'Replace Pump Motor'}</MenuItem>
                   </Select>
                 </FormControl>
                 <FormControl fullWidth variant="outlined" style={selectStyle}>
