@@ -119,7 +119,7 @@ function RegistroAnomalia() {
 
   const handleRemoveFile = (index) => {
     const newFiles = files.filter((_, i) => i !== index);
-    resetFile();
+    setFiles(newFiles); // Atualiza o estado com os arquivos restantes
   };
 
   const handleLanguageChange = (event, newLanguage) => {
