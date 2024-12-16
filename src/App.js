@@ -141,19 +141,64 @@ function RegistroAnomalia() {
 
   return (
     <>
-      <GlobalStyles styles={{
-        html: {
-          height: '100%',  // Garante que o HTML ocupe toda a altura da tela
-        },
-        body: {
-          margin: 0,  // Remove margens padrão
-          height: '20%',  // Garante que o body ocupe toda a altura da tela
-          backgroundImage: 'url(./prototipo_fundo.png)',
-          backgroundSize: 'cover', // Faz com que a imagem cubra toda a tela
-          backgroundRepeat: 'no-repeat', // Evita a repetição da imagem
-          backgroundPosition: 'center center', // Centraliza a imagem
-        }
-      }} />
+      <GlobalStyles
+  styles={{
+    html: {
+      height: '100%',
+    },
+    body: {
+      margin: 0,
+      height: '100%',
+      backgroundColor: 'white', // Fundo branco
+    },
+    '@media (max-width: 1024px)': {
+      body: {
+        backgroundColor: 'white', // Fundo branco
+      },
+      // Escondendo todo o conteúdo
+      '#root': {
+        display: 'none', // Esconde todo o conteúdo
+      },
+      // Estilo para exibir a mensagem sobre o fundo
+      'body::before': {
+        content: '"Demo disponível apenas para DeskTop"',
+        position: 'absolute',
+        top: '50%', // Centraliza verticalmente
+        left: '50%', // Centraliza horizontalmente
+        transform: 'translate(-50%, -50%)',
+        color: 'black', // Cor do texto
+        fontSize: '24px', // Tamanho da fonte
+        fontWeight: 'bold',
+        textAlign: 'center',
+        zIndex: '1000', // Garante que o texto fique acima de outros elementos
+        backgroundColor: 'rgba(255, 255, 255, 0.7)', // Fundo semitransparente
+        padding: '20px',
+        borderRadius: '8px',
+      },
+    },
+  }}
+/>
+
+      <GlobalStyles
+        styles={{
+          html: {
+            height: '100%',  // Garante que o HTML ocupe toda a altura da tela
+          },
+          body: {
+            margin: 0,  // Remove margens padrão
+            height: '100%',  // Garante que o body ocupe toda a altura da tela
+            backgroundImage: 'url(./prototipo_fundo.png)',
+            backgroundSize: 'cover', // Faz com que a imagem cubra toda a tela
+            backgroundRepeat: 'no-repeat', // Evita a repetição da imagem
+            backgroundPosition: 'center center', // Centraliza a imagem
+          },
+          '@media (max-width: 1024px)': {
+            body: {
+              backgroundImage: 'none', // Remove a imagem de fundo
+            },
+          },
+        }}
+      />
       <Box style={{ position: 'absolute', top: '20px', right: '20px' }}>
         <ToggleButtonGroup
           value={language}
