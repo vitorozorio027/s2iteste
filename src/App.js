@@ -275,10 +275,10 @@ function RegistroAnomalia() {
                     label={language === 'pt' ? 'Prazo (dias)' : 'Deadline (days)'}
                     style={{ height: '50px' }}
                   >
-                    <MenuItem value={10}>10 dias</MenuItem>
-                    <MenuItem value={20}>20 dias</MenuItem>
-                    <MenuItem value={30}>30 dias</MenuItem>
-                    <MenuItem value={90}>90 dias</MenuItem>
+                    <MenuItem value={10}>{language === 'pt' ? '10 dias' : '10 days'}</MenuItem>
+                    <MenuItem value={20}>{language === 'pt' ? '20 dias' : '20 days'}</MenuItem>
+                    <MenuItem value={30}>{language === 'pt' ? '30 dias' : '30 days'}</MenuItem>
+                    <MenuItem value={90}>{language === 'pt' ? '90 dias' : '90 days'}</MenuItem>
                   </Select>
                 </FormControl>
               </ScrollableFields>
