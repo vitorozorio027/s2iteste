@@ -186,7 +186,7 @@ function RegistroAnomalia() {
           },
           body: {
             margin: 0,  // Remove margens padrão
-            height: '100%',  // Garante que o body ocupe toda a altura da tela
+            height: '20%',  // Garante que o body ocupe toda a altura da tela
             backgroundImage: 'url(./prototipo_fundo.png)',
             backgroundSize: 'cover', // Faz com que a imagem cubra toda a tela
             backgroundRepeat: 'no-repeat', // Evita a repetição da imagem
