@@ -1,20 +1,29 @@
 import React, { useState, useRef } from 'react';
-import { TextField, MenuItem, Select, FormControl, InputLabel, Button, Grid, Box, Typography, Dialog, DialogActions, DialogContent, DialogTitle, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { TextField, MenuItem, Select, FormControl, InputLabel, Button, Grid, Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { styled } from '@mui/system';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import AvatarEditor from 'react-avatar-editor';
 import { GlobalStyles } from '@mui/material';
 
 // Estilizando os componentes
-const Container = styled('div')({
+const Container = styled('div')(({ theme }) => ({
   padding: '20px',
   maxWidth: '500px',
   margin: '0 auto',
-  marginTop: '30px',
   backgroundColor: '#fff',
   borderRadius: '8px',
-  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-});
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+  
+
+  // Media query para telas com largura menor que o breakpoint sm
+  [theme.breakpoints.down('sm')]: {
+    maxWidth: '100%',
+    padding: '20px', // Ajustar o padding se necessário
+    margin: '0 auto', // Remover a margem para ocupar toda a tela
+    borderRadius: '0', // Optional: remover borda arredondada, se necessário
+    boxShadow: 'none', // Optional: remover sombra, se necessário
+    minHeight: '100vh',
+  },
+}));
 
 const Title = styled(Typography)({
   textAlign: 'center',
@@ -37,7 +46,6 @@ const FileUploadBox = styled(Box)({
   textAlign: 'center',
   cursor: 'pointer',
   marginBottom: '15px',
-  height: '200px',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -58,11 +66,13 @@ const ScrollableFields = styled(Box)(({ theme }) => ({
   overflowY: 'auto',
   paddingRight: '10px',
   paddingTop: '5px', // Ajusta o padding superior especificamente
-  [theme.breakpoints.down('md')]: {
-    maxHeight: 'none',
-    overflowY: 'visible',
+
+  [theme.breakpoints.down('sm')]: {
+    maxHeight: '30vh',
   },
+
 }));
+
 
 function RegistroAnomalia() {
   const [local, setLocal] = useState('');
@@ -99,7 +109,7 @@ function RegistroAnomalia() {
     setOpenModal(false); // Fecha o modal
   };
 
-  const resetFile =() => {
+  const resetFile = () => {
     setFiles([]);
   };
 
@@ -119,7 +129,7 @@ function RegistroAnomalia() {
 
   const handleRemoveFile = (index) => {
     const newFiles = files.filter((_, i) => i !== index);
-    resetFile();
+    setFiles(newFiles); // Atualiza o estado com os arquivos restantes
   };
 
   const handleLanguageChange = (event, newLanguage) => {
@@ -137,24 +147,42 @@ function RegistroAnomalia() {
     return local && tecnica && status && ponto && sintoma && causa && recomendacao && prazo;
   };
 
-  
 
   return (
     <>
-      <GlobalStyles styles={{
-        html: {
-          height: '100%',  // Garante que o HTML ocupe toda a altura da tela
-        },
-        body: {
-          margin: 0,  // Remove margens padrão
-          height: '20%',  // Garante que o body ocupe toda a altura da tela
-          backgroundImage: 'url(./prototipo_fundo.png)',
-          backgroundSize: 'cover', // Faz com que a imagem cubra toda a tela
-          backgroundRepeat: 'no-repeat', // Evita a repetição da imagem
-          backgroundPosition: 'center center', // Centraliza a imagem
-        }
-      }} />
-      <Box style={{ position: 'absolute', top: '20px', right: '20px' }}>
+      <GlobalStyles
+        styles={{
+          html: {
+            height: '100%',  // Garante que o HTML ocupe toda a altura da tela
+          },
+          body: {
+            margin: 0,  // Remove margens padrão
+            height: '100%',  // Garante que o body ocupe toda a altura da tela
+            backgroundImage: 'url(./prototipo_fundo.png)',
+            backgroundSize: 'cover', // Faz com que a imagem cubra toda a tela
+            backgroundRepeat: 'no-repeat', // Evita a repetição da imagem
+            backgroundPosition: 'center', // Centraliza a imagem
+            overflowY: 'hidden',
+            display: 'flex',
+            justifyContent: 'center', // Centraliza horizontalmente
+            alignItems: 'center', // Centraliza verticalmente
+          },
+          '@media (max-width: 920px)': {
+            body: {
+              backgroundImage: 'none',
+              backgroundColor: '#f2f2f2',
+            },
+          },
+          '@media (max-width: 599px)': {
+            body: {
+              overflowY: 'auto',
+              display: 'block', // Modifica o display para 'block' quando a largura for menor que 599px
+            },
+          },
+        }}
+      />
+
+      <Box style={{ position: 'absolute', top: '20px', right: '20px', }}>
         <ToggleButtonGroup
           value={language}
           exclusive
@@ -165,15 +193,16 @@ function RegistroAnomalia() {
             value="pt"
             aria-label="portuguese"
             style={{ backgroundColor: 'white', fontWeight: 'bold' }}
+
           >
-            Português
+            PT
           </ToggleButton>
           <ToggleButton
             value="en"
             aria-label="english"
             style={{ backgroundColor: 'white', fontWeight: 'bold' }}
           >
-            English
+            EN
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
@@ -191,10 +220,30 @@ function RegistroAnomalia() {
                   label={language === 'pt' ? 'Local' : 'Location'}
                   style={{ height: '50px' }}
                 >
-                  <MenuItem value={language === 'pt' ? "Conjunto motobomba 022 do Tratamento de Água" : "Pump Set 022 of Water Treatment"}>
-                    {language === 'pt' ? 'Conjunto motobomba 022 do Tratamento de Água' : 'Pump Set 022 of Water Treatment'}
+                  <MenuItem value={language === 'pt' ? "Conjunto motobomba 022 do Tratamento de Água" : "Pump Motor Set 022 of Water Treatment"}>
+                    {language === 'pt' ? 'Conjunto motobomba 022 do Tratamento de Água' : 'Pump Motor Set 022 of Water Treatment'}
                   </MenuItem>
 
+                </Select>
+              </FormControl>
+              <FormControl
+                fullWidth
+                variant="outlined"
+                style={selectStyle}
+                sx={{
+                  display: { xs: 'block', sm: 'none' } // Oculta em telas menores que 600px
+                }}
+              >
+                <InputLabel>{language === 'pt' ? 'Modalidade' : 'Type'}</InputLabel>
+                <Select
+                  value={modalidade}
+                  onChange={(e) => setModalidade(e.target.value)}
+                  label={language === 'pt' ? 'Modalidade' : 'Type'}
+                  style={{ height: '50px', width: '100%' }}
+                >
+                  <MenuItem value={language === 'pt' ? 'Mecânica' : 'Mechanical'}>
+                    {language === 'pt' ? 'Mecânica' : 'Mechanical'}
+                  </MenuItem>
                 </Select>
               </FormControl>
               <ScrollableFields>
@@ -275,33 +324,43 @@ function RegistroAnomalia() {
                     label={language === 'pt' ? 'Prazo (dias)' : 'Deadline (days)'}
                     style={{ height: '50px' }}
                   >
-                    <MenuItem value={10}>10 dias</MenuItem>
-                    <MenuItem value={20}>20 dias</MenuItem>
-                    <MenuItem value={30}>30 dias</MenuItem>
-                    <MenuItem value={90}>90 dias</MenuItem>
+                    <MenuItem value={10}>{language === 'pt' ? '10 dias' : '10 days'}</MenuItem>
+                    <MenuItem value={20}>{language === 'pt' ? '20 dias' : '20 days'}</MenuItem>
+                    <MenuItem value={30}>{language === 'pt' ? '30 dias' : '30 days'}</MenuItem>
+                    <MenuItem value={90}>{language === 'pt' ? '90 dias' : '90 days'}</MenuItem>
                   </Select>
                 </FormControl>
               </ScrollableFields>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth variant="outlined" style={selectStyle}>
+              <FormControl
+                fullWidth
+                variant="outlined"
+                style={selectStyle}
+                sx={{
+                  display: { xs: 'none', sm: 'block' } // Oculta em telas menores que 600px
+                }}
+              >
                 <InputLabel>{language === 'pt' ? 'Modalidade' : 'Type'}</InputLabel>
                 <Select
                   value={modalidade}
                   onChange={(e) => setModalidade(e.target.value)}
                   label={language === 'pt' ? 'Modalidade' : 'Type'}
-                  style={{ height: '50px' }}
+                  style={{ height: '50px', width: '100%' }}
                 >
-                  <MenuItem value={language === 'pt' ? 'Mecânica' : 'Mechanical'}>{language === 'pt' ? 'Mecânica' : 'Mechanical'}</MenuItem>
+                  <MenuItem value={language === 'pt' ? 'Mecânica' : 'Mechanical'}>
+                    {language === 'pt' ? 'Mecânica' : 'Mechanical'}
+                  </MenuItem>
                 </Select>
               </FormControl>
+
               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
                 style={{ display: 'none' }}
-                multiple
-                onChange={handleFileChange}
+              multiple
+              onChange={handleFileChange}
               />
               <FileUploadBox
                 onClick={!files.length ? handleFileUploadClick : null}
@@ -393,246 +452,6 @@ function RegistroAnomalia() {
         </Form>
 
 
-        {/* Modal para exibir o relatório */}
-        <Dialog
-          open={openModal}
-          onClose={handleCloseModal}
-          fullWidth
-          sx={{
-            '& .MuiDialogContent-root': {
-              padding: '20px', // Ajuste o padding conforme necessário
-              overflowY: 'auto', // Isso permitirá que o conteúdo role
-            },
-            '& .MuiDialog-paper': {
-              width: '55%', // Aumente a largura do modal
-              maxWidth: 'none', // Para remover a largura máxima padrão
-            }
-          }}
-        >
-          <DialogContent>
-            <DialogTitle>
-              <Grid container alignItems="center">
-                <Grid item>
-                  <img
-                    src="./Logomarca_Pred.png"
-                    alt="Logo"
-                    style={{
-                      height: '44px',
-                      width: 'auto',
-                      marginRight: '20px',
-                      marginBottom: '25px', // Aumenta a margem inferior da logo
-                      marginTop: '10px'
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', overflowY: 'auto' }}>
-                    <thead>
-                      <tr>
-                        <th
-                          rowSpan="2"
-                          style={{
-                            fontSize: '20px',
-                            marginLeft: '200px',
-                            borderTop: '2px solid black',
-                            borderBottom: '2px solid black'
-                          }}
-                        >
-                          {language === 'pt' ? 'Relatórios de Anomalia' : 'Anomaly Reports'}
-                        </th>
-                        <th
-                          rowSpan="2"
-                          style={{
-                            textAlign: 'left',
-                            verticalAlign: 'top',
-                            fontSize: '14px',
-                            borderTop: '2px solid black',
-                            borderBottom: '2px solid black',
-                            borderLeft: '2px solid black'
-                          }}
-                        >
-                          {language === 'pt' ? 'Técnica:' : 'Technique:'}<br />
-                          <span style={{ fontSize: '20px', marginLeft: '10px' }}>{tecnica}</span>
-                        </th>
-                        <th
-                          rowSpan="2"
-                          style={{
-                            textAlign: 'left',
-                            verticalAlign: 'top',
-                            fontSize: '14px',
-                            borderTop: '2px solid black',
-                            borderBottom: '2px solid black',
-                            borderLeft: '2px solid black'
-                          }}
-                        >
-                          {language === 'pt' ? 'Status:' : 'Status:'}<br />
-                          <span style={{ fontSize: '20px', marginLeft: '10px' }}>{status}</span>
-                        </th>
-                      </tr>
-                    </thead>
-                  </table>
-                </Grid>
-              </Grid>
-            </DialogTitle>
-
-            {/* Conteúdo rolável */}
-            <Box
-              sx={{
-                backgroundColor: '#f2f2f2',
-                padding: '1px',
-                marginBottom: '5px',
-                width: 'auto',
-              }}
-            >
-              <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px' }}>
-                <strong>{language === 'pt' ? 'Local da anomalia' : 'Location of the anomaly'}</strong>
-              </Typography>
-            </Box>
-            <Typography variant="body1" sx={{ marginTop: '-6px', fontSize: '14px', marginLeft: '30px' }}>
-              {local}
-            </Typography>
-
-            <Box
-              sx={{
-                backgroundColor: '#f2f2f2',
-                padding: '1px',
-                marginBottom: '5px',
-                width: 'auto',
-                marginTop: '15px',
-              }}
-            >
-              <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px' }}>
-                <strong>{language === 'pt' ? 'Descrição da anomalia' : 'Description of the anomaly'}</strong>
-              </Typography>
-            </Box>
-            <Typography variant="body1" sx={{ marginTop: '-6px', fontSize: '14px', marginLeft: '30px' }}>
-              {language === 'pt'
-                ? `Anomalia registrada em ${new Date().toLocaleDateString('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit' })} Inspetor Pred`
-                : `Anomaly registered on ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })} Pred Inspector`}
-              <br />
-              {language === 'pt' ? `${ponto} com ${sintoma}` : `${ponto} with ${sintoma}`}
-            </Typography>
-
-            {/* Continue com o conteúdo do modal */}
-            <Box
-              sx={{
-                backgroundColor: '#f2f2f2',
-                padding: '1px',
-                marginBottom: '5px',
-                width: 'auto',
-                marginTop: '15px',
-              }}
-            >
-              <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px' }}>
-                <strong>{language === 'pt' ? 'Avaliação da anomalia' : 'Anomaly assessment'}</strong>
-              </Typography>
-            </Box>
-            <Grid container alignItems="center" justifyContent="flex-end" sx={{ marginTop: '5px' }}>
-              <Grid item xs={4}>
-                <img
-                  src={language === 'pt' ? "./imagem1_pt.png" : "./imagem1_en.png"}
-                  alt="Anomalia"
-                  style={{
-                    height: '220px',
-                    width: 'auto',
-                    display: 'block',
-                    marginLeft: '-150px'
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            <Box
-              sx={{
-                backgroundColor: '#f2f2f2',
-                padding: '1px',
-                marginBottom: '5px',
-                width: 'auto',
-                marginTop: '15px',
-              }}
-            >
-              <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px' }}>
-                <strong>{language === 'pt' ? 'Intervenção recomendada' : 'Recommended intervention'}</strong>
-              </Typography>
-            </Box>
-            <Typography variant="body1" sx={{ marginTop: '-6px', fontSize: '14px', marginLeft: '30px' }}>
-              {language === 'pt'
-                ? `${recomendacao} até ${new Date(Date.now() + prazo * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit'
-                })}. ${detalhes}`
-                : `${recomendacao} until ${new Date(Date.now() + prazo * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit'
-                })}. ${detalhes}`}
-            </Typography>
-
-
-            <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px', marginTop: '40px' }}>
-              <strong>{language === 'pt' ? 'Fotografia do equipamento' : 'Equipment Photograph'}</strong>
-            </Typography>
-            <Box
-              sx={{
-                width: '380px',
-                height: '251px',
-                border: '1px solid black',
-                marginTop: '2px',
-                boxSizing: 'border-box',
-                marginLeft: '18px'
-              }}
-            >
-              {files.length > 0 && files[0].type.startsWith('image') ? (
-                <img
-                  src={URL.createObjectURL(files[0])}
-                  alt={files[0].name}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover'
-                  }}
-                />
-              ) : (
-                <Typography variant="body1" style={{ textAlign: 'center', lineHeight: '251px' }}></Typography>
-              )}
-            </Box>
-
-            <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px', marginTop: '2px' }}>
-              <strong>{language === 'pt' ? 'Fotografia pós reparo' : 'Post-repair Photograph'}</strong>
-            </Typography>
-
-            <Box
-              sx={{
-                width: '380px',
-                height: '250px',
-                border: '1px solid black',
-                marginTop: '2px',
-                boxSizing: 'border-box',
-                marginLeft: '18px'
-              }}
-            ></Box>
-
-            <Box
-              sx={{
-                width: '97%',
-                height: '60px',
-                border: '1px solid black',
-                marginTop: '-1px',
-                boxSizing: 'border-box',
-                marginLeft: '18px',
-                fontSize: '13px'
-              }}
-            >
-              {language === 'pt' ? 'Comentários pós manutenção:' : 'Post-maintenance Comments:'}
-            </Box>
-          </DialogContent>
-
-
-          <DialogActions>
-            <Button onClick={handleCloseModal} color="primary">Fechar</Button>
-          </DialogActions>
-        </Dialog>
 
 
       </Container>
