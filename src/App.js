@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { TextField, MenuItem, Select, FormControl, InputLabel, Button, Grid, Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { TextField, Dialog, DialogContent, DialogTitle, DialogActions, MenuItem, Select, FormControl, InputLabel, Button, Grid, Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { styled } from '@mui/system';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { GlobalStyles } from '@mui/material';
@@ -125,12 +125,19 @@ function RegistroAnomalia() {
   const [openModal, setOpenModal] = useState(false);
 
   const [language, setLanguage] = useState('pt'); // 'pt' para Português, 'en' para Inglês
+  const [showMessage, setShowMessage] = useState(false); // Estado para controlar a mensagem
 
   const fileInputRef = useRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setOpenModal(true); // Abre o modal com as informações preenchidas
+
+    // Verifica a largura da tela
+    if (window.innerWidth < 780) {
+      setShowMessage(true); // Exibe a mensagem se a largura for menor que 780px
+    } else {
+      setOpenModal(true); // Abre o modal com as informações preenchidas
+    }
   };
 
   const handleFileChange = (e) => {
@@ -180,7 +187,11 @@ function RegistroAnomalia() {
   };
 
   const isFormValid = () => {
-    return local && tecnica && status && ponto && sintoma && causa && recomendacao && prazo;
+    return local && tecnica && status && ponto && sintoma && causa && recomendacao && prazo && modalidade;
+  };
+
+  const handleCloseMessage = () => {
+    setShowMessage(false); // Fecha a mensagem
   };
 
 
@@ -219,36 +230,36 @@ function RegistroAnomalia() {
       />
 
       <Box style={{ position: 'absolute', top: '20px', right: '20px' }}>
-      <ToggleButtonGroup
-            value={language}
-            exclusive
-            onChange={handleLanguageChange}
-            aria-label="language"
-            sx={{ display: { xs: 'none', sm: 'block' }}}
+        <ToggleButtonGroup
+          value={language}
+          exclusive
+          onChange={handleLanguageChange}
+          aria-label="language"
+          sx={{ display: { xs: 'none', sm: 'block' } }}
+        >
+          <StyledToggleButton
+            value="pt"
+            aria-label="portuguese"
+            selected={language === 'pt'}
           >
-            <StyledToggleButton
-              value="pt"
-              aria-label="portuguese"
-              selected={language === 'pt'}
-            >
-              <StyledFlag
-                country="BR"
-                size={48}
-                className={language === 'pt' ? 'Mui-selected' : ''}
-              />
-            </StyledToggleButton>
-            <StyledToggleButton
-              value="en"
-              aria-label="english"
-              selected={language === 'en'}
-            >
-              <StyledFlag
-                country="US"
-                size={48}
-                className={language === 'en' ? 'Mui-selected' : ''}
-              />
-            </StyledToggleButton>
-          </ToggleButtonGroup>
+            <StyledFlag
+              country="BR"
+              size={48}
+              className={language === 'pt' ? 'Mui-selected' : ''}
+            />
+          </StyledToggleButton>
+          <StyledToggleButton
+            value="en"
+            aria-label="english"
+            selected={language === 'en'}
+          >
+            <StyledFlag
+              country="US"
+              size={48}
+              className={language === 'en' ? 'Mui-selected' : ''}
+            />
+          </StyledToggleButton>
+        </ToggleButtonGroup>
       </Box>
 
 
@@ -503,7 +514,315 @@ function RegistroAnomalia() {
               {language === 'pt' ? 'Salvar' : 'Save'}
             </CustomButton>
           </Box>
+
+          {/* Mensagem de aviso */}
+          {showMessage && (
+            <Box
+              sx={{
+                background: 'linear-gradient(to right, #f7c5fc, #f2a6d3)',
+                padding: '20px',
+                marginTop: '15px',
+                borderRadius: '10px',
+                textAlign: 'center',
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                animation: 'fadeIn 0.5s ease-out',
+              }}
+            >
+              <Typography variant="body1" sx={{ fontSize: '16px', fontWeight: '500', color: '#333' }}>
+                {language === 'pt'
+                  ? 'Relatórios disponíveis apenas para DeskTop e Tablets'
+                  : 'Reports available only for Desktop and Tablets'}
+              </Typography>
+              <Button
+                onClick={handleCloseMessage}
+                color="primary"
+                sx={{
+                  marginTop: '10px',
+                  borderRadius: '20px',
+                  textTransform: 'none',
+                  padding: '10px 20px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  backgroundColor: '#6200ea',
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: '#3700b3',
+                  },
+                }}
+              >
+                <Typography variant="button" sx={{ color: 'white' }}>
+                  Fechar
+                </Typography>
+              </Button>
+            </Box>
+          )}
+
         </Form>
+
+        <Dialog
+          open={openModal}
+          onClose={handleCloseModal}
+          fullWidth
+          sx={{
+            display: 'block',
+            '& .MuiDialogContent-root': {
+              padding: '20px',
+              overflowY: 'auto',
+            },
+            '& .MuiDialog-paper': {
+              width: '80%',  // Aumenta a largura para 80% em telas grandes
+              maxWidth: 'none',
+              margin: '0 auto',  // Centraliza o modal
+              minWidth: '320px',  // Largura mínima para dispositivos muito pequenos
+            },
+            '@media (max-width: 1024px)': {
+              '& .MuiDialog-paper': {
+                width: '90%',  // Ajusta a largura para 90% em telas menores que 1024px
+              },
+            },
+            '@media (max-width: 780px)': {
+              display: 'none',
+
+              '& .MuiDialogContent-root': {
+                padding: '10px',  // Menos padding em telas pequenas
+              },
+              '@media (max-width: 780px) and (orientation: landscape)': {
+                display: 'none',  // Esconde o conteúdo em orientação paisagem em telas menores que 780px
+              },
+            },
+          }}
+        >
+          <DialogContent>
+            <DialogTitle>
+              <Grid container alignItems="center">
+                <Grid item>
+                  <img
+                    src="./Logomarca_Pred.png"
+                    alt="Logo"
+                    style={{
+                      height: '44px',
+                      width: 'auto',
+                      marginRight: '20px',
+                      marginBottom: '25px',
+                      marginTop: '10px',
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <table
+                    style={{
+                      width: '100%',
+                      borderCollapse: 'collapse',
+                      overflowY: 'auto',
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        <th
+                          rowSpan="2"
+                          style={{
+                            fontSize: '20px',
+                            marginLeft: '200px',
+                            borderTop: '2px solid black',
+                            borderBottom: '2px solid black',
+                          }}
+                        >
+                          {language === 'pt' ? 'Relatórios de Anomalia' : 'Anomaly Reports'}
+                        </th>
+                        <th
+                          rowSpan="2"
+                          style={{
+                            textAlign: 'left',
+                            verticalAlign: 'top',
+                            fontSize: '14px',
+                            borderTop: '2px solid black',
+                            borderBottom: '2px solid black',
+                            borderLeft: '2px solid black',
+                          }}
+                        >
+                          {language === 'pt' ? 'Técnica:' : 'Technique:'}
+                          <br />
+                          <span style={{ fontSize: '20px', marginLeft: '10px' }}>{tecnica}</span>
+                        </th>
+                        <th
+                          rowSpan="2"
+                          style={{
+                            textAlign: 'left',
+                            verticalAlign: 'top',
+                            fontSize: '14px',
+                            borderTop: '2px solid black',
+                            borderBottom: '2px solid black',
+                            borderLeft: '2px solid black',
+                          }}
+                        >
+                          {language === 'pt' ? 'Status:' : 'Status:'}
+                          <br />
+                          <span style={{ fontSize: '20px', marginLeft: '10px' }}>{status}</span>
+                        </th>
+                      </tr>
+                    </thead>
+                  </table>
+                </Grid>
+              </Grid>
+            </DialogTitle>
+
+            <Box
+              sx={{
+                backgroundColor: '#f2f2f2',
+                padding: '1px',
+                marginBottom: '5px',
+                width: 'auto',
+              }}
+            >
+              <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px' }}>
+                <strong>{language === 'pt' ? 'Local da anomalia' : 'Location of the anomaly'}</strong>
+              </Typography>
+            </Box>
+            <Typography variant="body1" sx={{ marginTop: '-6px', fontSize: '14px', marginLeft: '30px' }}>
+              {local}
+            </Typography>
+
+            <Box
+              sx={{
+                backgroundColor: '#f2f2f2',
+                padding: '1px',
+                marginBottom: '5px',
+                width: 'auto',
+                marginTop: '15px',
+              }}
+            >
+              <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px' }}>
+                <strong>{language === 'pt' ? 'Descrição da anomalia' : 'Description of the anomaly'}</strong>
+              </Typography>
+            </Box>
+            <Typography variant="body1" sx={{ marginTop: '-6px', fontSize: '14px', marginLeft: '30px' }}>
+              {language === 'pt'
+                ? `Anomalia registrada em ${new Date().toLocaleDateString('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit' })} Inspetor Pred`
+                : `Anomaly registered on ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })} Pred Inspector`}
+              <br />
+              {language === 'pt' ? `${ponto} com ${sintoma}` : `${ponto} with ${sintoma}`}
+            </Typography>
+
+            <Box
+              sx={{
+                backgroundColor: '#f2f2f2',
+                padding: '1px',
+                marginBottom: '5px',
+                width: 'auto',
+                marginTop: '15px',
+              }}
+            >
+              <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px' }}>
+                <strong>{language === 'pt' ? 'Avaliação da anomalia' : 'Anomaly assessment'}</strong>
+              </Typography>
+            </Box>
+            <Grid container alignItems="center">
+              <Grid item xs={12}>
+                <img
+                  src={language === 'pt' ? "./imagem1_pt.png" : "./imagem1_en.png"}
+                  alt="Anomalia"
+                  style={{
+                    width: 'auto',  // Ajuste a porcentagem conforme necessário
+                    height: '220px',
+                    display: 'block',
+                    marginLeft: 'auto',  // Move a imagem para a direita
+                    marginRight: 0,  // Garante que não haja margem à direita
+                  }}
+                />
+              </Grid>
+            </Grid>
+
+
+
+            <Box
+              sx={{
+                backgroundColor: '#f2f2f2',
+                padding: '1px',
+                marginBottom: '5px',
+                width: 'auto',
+                marginTop: '15px',
+              }}
+            >
+              <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px' }}>
+                <strong>{language === 'pt' ? 'Intervenção recomendada' : 'Recommended intervention'}</strong>
+              </Typography>
+            </Box>
+            <Typography variant="body1" sx={{ marginTop: '-6px', fontSize: '14px', marginLeft: '30px' }}>
+              {language === 'pt'
+                ? `${recomendacao} até ${new Date(Date.now() + prazo * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                })}. ${detalhes}`
+                : `${recomendacao} until ${new Date(Date.now() + prazo * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                })}. ${detalhes}`}
+            </Typography>
+
+            <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px', marginTop: '40px' }}>
+              <strong>{language === 'pt' ? 'Fotografia do equipamento' : 'Equipment Photograph'}</strong>
+            </Typography>
+            <Box
+              sx={{
+                width: '380px',
+                height: '251px',
+                border: '1px solid black',
+                marginTop: '2px',
+                boxSizing: 'border-box',
+                marginLeft: '18px',
+              }}
+            >
+              {files.length > 0 && files[0].type.startsWith('image') ? (
+                <img
+                  src={URL.createObjectURL(files[0])}
+                  alt={files[0].name}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                  }}
+                />
+              ) : (
+                <Typography variant="body1" style={{ textAlign: 'center', lineHeight: '251px' }}></Typography>
+              )}
+            </Box>
+
+            <Typography variant="body2" sx={{ fontSize: '13px', marginLeft: '20px', marginTop: '2px' }}>
+              <strong>{language === 'pt' ? 'Fotografia pós reparo' : 'Post-repair Photograph'}</strong>
+            </Typography>
+
+            <Box
+              sx={{
+                width: '380px',
+                height: '250px',
+                border: '1px solid black',
+                marginTop: '2px',
+                boxSizing: 'border-box',
+                marginLeft: '18px',
+              }}
+            ></Box>
+
+            <Box
+              sx={{
+                width: '97%',
+                height: '60px',
+                border: '1px solid black',
+                marginTop: '-1px',
+                boxSizing: 'border-box',
+                marginLeft: '18px',
+                fontSize: '13px',
+              }}
+            >
+              {language === 'pt' ? 'Comentários pós manutenção:' : 'Post-maintenance Comments:'}
+            </Box>
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={handleCloseModal} color="primary">Fechar</Button>
+          </DialogActions>
+        </Dialog>
 
 
 
