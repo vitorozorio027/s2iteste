@@ -263,7 +263,7 @@ function RegistroAnomalia() {
       </Box>
 
 
-      <Container>
+      <Container translate="no">
         <Title variant="h5" sx={{ display: { xs: 'flex', sm: 'none' }, justifyContent: 'space-between', alignItems: 'center' }}>
           {language === 'pt' ? 'Registro de Anomalia' : 'Anomaly Registration'}
           <ToggleButtonGroup
