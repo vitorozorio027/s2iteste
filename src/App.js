@@ -530,8 +530,8 @@ function RegistroAnomalia() {
             >
               <Typography variant="body1" sx={{ fontSize: '16px', fontWeight: '500', color: '#333' }}>
                 {language === 'pt'
-                  ? 'Relatórios disponíveis apenas para DeskTop e Tablets'
-                  : 'Reports available only for Desktop and Tablets'}
+                  ? 'Os relatórios estão disponíveis para dispositivos Desktop e alguns modelos selecionados de dispositivos móveis.'
+                  : 'The reports are available for Desktop devices and select models of mobile devices.'}
               </Typography>
               <Button
                 onClick={handleCloseMessage}
