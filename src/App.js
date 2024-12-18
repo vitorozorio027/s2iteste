@@ -3,6 +3,7 @@ import { TextField, MenuItem, Select, FormControl, InputLabel, Button, Grid, Box
 import { styled } from '@mui/system';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { GlobalStyles } from '@mui/material';
+import Flag from 'react-flagkit';
 
 // Estilizando os componentes
 const Container = styled('div')(({ theme }) => ({
@@ -12,7 +13,6 @@ const Container = styled('div')(({ theme }) => ({
   backgroundColor: '#fff',
   borderRadius: '8px',
   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-  
 
   // Media query para telas com largura menor que o breakpoint sm
   [theme.breakpoints.down('sm')]: {
@@ -21,18 +21,23 @@ const Container = styled('div')(({ theme }) => ({
     margin: '0 auto', // Remover a margem para ocupar toda a tela
     borderRadius: '0', // Optional: remover borda arredondada, se necessário
     boxShadow: 'none', // Optional: remover sombra, se necessário
-    minHeight: '100vh',
+    minHeight: '100%',
   },
 }));
 
-const Title = styled(Typography)({
+const Title = styled(Typography)(({ theme }) => ({
   textAlign: 'center',
   backgroundColor: '#090082',
   color: '#fff',
   padding: '10px',
   borderRadius: '8px 8px 0 0',
   fontWeight: 'bold',
-});
+  [theme.breakpoints.down('sm')]: {
+    textAlign: 'left', // Alinha o título à esquerda
+    fontSize: '22px',
+  },
+}));
+
 
 const Form = styled('form')({
   padding: '10px',
@@ -66,12 +71,43 @@ const ScrollableFields = styled(Box)(({ theme }) => ({
   overflowY: 'auto',
   paddingRight: '10px',
   paddingTop: '5px', // Ajusta o padding superior especificamente
-
-  [theme.breakpoints.down('sm')]: {
-    maxHeight: '30vh',
-  },
-
+  maxHeight: '30vh',
 }));
+
+const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
+  fontWeight: 'bold',
+  padding: 0,
+  marginRight: '10px',
+  width: '50px',
+  height: '50px',
+  transition: 'opacity 0.1s ease-in-out',
+  border: 'transparent',
+  backgroundColor: 'none',
+  '&.Mui-selected': {
+    backgroundColor: 'transparent', // Adiciona um fundo diferente quando selecionado
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '39px',  // Diminuir o tamanho do botão
+    height: '39px', // Diminuir o tamanho do botão
+  },
+}));
+
+const StyledFlag = styled(Flag)(({ theme }) => ({
+  borderRadius: '50%',
+  objectFit: 'cover',
+  opacity: 0.7,
+  transition: 'opacity 0.1s ease-in-out',
+  '&.Mui-selected': {
+    opacity: 1, // Aumenta a opacidade quando selecionado
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '39px',  // Diminuir o tamanho da bandeira
+    height: '39px', // Diminuir o tamanho da bandeira
+  },
+}));
+
+
+
 
 
 function RegistroAnomalia() {
@@ -169,7 +205,7 @@ function RegistroAnomalia() {
           },
           '@media (max-width: 920px)': {
             body: {
-              backgroundImage: 'none',
+              backgroundImage: 'none', // Remove a imagem de fundo
               backgroundColor: '#f2f2f2',
             },
           },
@@ -182,33 +218,81 @@ function RegistroAnomalia() {
         }}
       />
 
-      <Box style={{ position: 'absolute', top: '20px', right: '20px', }}>
-        <ToggleButtonGroup
-          value={language}
-          exclusive
-          onChange={handleLanguageChange}
-          aria-label="language"
-        >
-          <ToggleButton
-            value="pt"
-            aria-label="portuguese"
-            style={{ backgroundColor: 'white', fontWeight: 'bold' }}
-
+      <Box style={{ position: 'absolute', top: '20px', right: '20px' }}>
+      <ToggleButtonGroup
+            value={language}
+            exclusive
+            onChange={handleLanguageChange}
+            aria-label="language"
+            sx={{ display: { xs: 'none', sm: 'block' }}}
           >
-            PT
-          </ToggleButton>
-          <ToggleButton
-            value="en"
-            aria-label="english"
-            style={{ backgroundColor: 'white', fontWeight: 'bold' }}
-          >
-            EN
-          </ToggleButton>
-        </ToggleButtonGroup>
+            <StyledToggleButton
+              value="pt"
+              aria-label="portuguese"
+              selected={language === 'pt'}
+            >
+              <StyledFlag
+                country="BR"
+                size={48}
+                className={language === 'pt' ? 'Mui-selected' : ''}
+              />
+            </StyledToggleButton>
+            <StyledToggleButton
+              value="en"
+              aria-label="english"
+              selected={language === 'en'}
+            >
+              <StyledFlag
+                country="US"
+                size={48}
+                className={language === 'en' ? 'Mui-selected' : ''}
+              />
+            </StyledToggleButton>
+          </ToggleButtonGroup>
       </Box>
 
+
       <Container>
-        <Title variant="h5">{language === 'pt' ? 'Registro de Anomalia' : 'Anomaly Registration'}</Title>
+        <Title variant="h5" sx={{ display: { xs: 'flex', sm: 'none' }, justifyContent: 'space-between', alignItems: 'center' }}>
+          {language === 'pt' ? 'Registro de Anomalia' : 'Anomaly Registration'}
+          <ToggleButtonGroup
+            value={language}
+            exclusive
+            onChange={handleLanguageChange}
+            aria-label="language"
+            sx={{ display: { xs: 'block', sm: 'none' } }}
+          >
+            <StyledToggleButton
+              value="pt"
+              aria-label="portuguese"
+              selected={language === 'pt'}
+            >
+              <StyledFlag
+                country="BR"
+                size={48}
+                className={language === 'pt' ? 'Mui-selected' : ''}
+              />
+            </StyledToggleButton>
+            <StyledToggleButton
+              value="en"
+              aria-label="english"
+              selected={language === 'en'}
+            >
+              <StyledFlag
+                country="US"
+                size={48}
+                className={language === 'en' ? 'Mui-selected' : ''}
+              />
+            </StyledToggleButton>
+          </ToggleButtonGroup>
+
+        </Title>
+
+
+        <Title variant="h5"
+          sx={{ display: { xs: 'none', sm: 'block' } }}>
+          {language === 'pt' ? 'Registro de Anomalia' : 'Anomaly Registration'}
+        </Title>
         <Form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -224,26 +308,6 @@ function RegistroAnomalia() {
                     {language === 'pt' ? 'Conjunto motobomba 022 do Tratamento de Água' : 'Pump Motor Set 022 of Water Treatment'}
                   </MenuItem>
 
-                </Select>
-              </FormControl>
-              <FormControl
-                fullWidth
-                variant="outlined"
-                style={selectStyle}
-                sx={{
-                  display: { xs: 'block', sm: 'none' } // Oculta em telas menores que 600px
-                }}
-              >
-                <InputLabel>{language === 'pt' ? 'Modalidade' : 'Type'}</InputLabel>
-                <Select
-                  value={modalidade}
-                  onChange={(e) => setModalidade(e.target.value)}
-                  label={language === 'pt' ? 'Modalidade' : 'Type'}
-                  style={{ height: '50px', width: '100%' }}
-                >
-                  <MenuItem value={language === 'pt' ? 'Mecânica' : 'Mechanical'}>
-                    {language === 'pt' ? 'Mecânica' : 'Mechanical'}
-                  </MenuItem>
                 </Select>
               </FormControl>
               <ScrollableFields>
@@ -333,34 +397,24 @@ function RegistroAnomalia() {
               </ScrollableFields>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormControl
-                fullWidth
-                variant="outlined"
-                style={selectStyle}
-                sx={{
-                  display: { xs: 'none', sm: 'block' } // Oculta em telas menores que 600px
-                }}
-              >
+              <FormControl fullWidth variant="outlined" style={selectStyle}>
                 <InputLabel>{language === 'pt' ? 'Modalidade' : 'Type'}</InputLabel>
                 <Select
                   value={modalidade}
                   onChange={(e) => setModalidade(e.target.value)}
                   label={language === 'pt' ? 'Modalidade' : 'Type'}
-                  style={{ height: '50px', width: '100%' }}
+                  style={{ height: '50px' }}
                 >
-                  <MenuItem value={language === 'pt' ? 'Mecânica' : 'Mechanical'}>
-                    {language === 'pt' ? 'Mecânica' : 'Mechanical'}
-                  </MenuItem>
+                  <MenuItem value={language === 'pt' ? 'Mecânica' : 'Mechanical'}>{language === 'pt' ? 'Mecânica' : 'Mechanical'}</MenuItem>
                 </Select>
               </FormControl>
-
               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
                 style={{ display: 'none' }}
-              multiple
-              onChange={handleFileChange}
+                multiple
+                onChange={handleFileChange}
               />
               <FileUploadBox
                 onClick={!files.length ? handleFileUploadClick : null}
